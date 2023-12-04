@@ -1,13 +1,15 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="Worksheet_RemoveHyperlinks" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:ce="clr-namespace:ClosedXML.Excel;assembly=ClosedXML" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="Workbook_RemoveReadOnlyAttribute" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:this="clr-namespace:" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="WorkbookPath" Type="InArgument(x:String)" />
-    <x:Property Name="EditedWorkbookPath" Type="InArgument(x:String)" />
+    <x:Property Name="FilePath" Type="InArgument(x:String)" />
   </x:Members>
+  <this:Workbook_RemoveReadOnlyAttribute.FilePath>
+    <InArgument x:TypeArguments="x:String" />
+  </this:Workbook_RemoveReadOnlyAttribute.FilePath>
   <VisualBasic.Settings>
     <x:Null />
   </VisualBasic.Settings>
   <sap:VirtualizedContainerService.HintSize>1634,1179</sap:VirtualizedContainerService.HintSize>
-  <sap2010:WorkflowViewState.IdRef>Worksheet_RemoveHyperlinks_1</sap2010:WorkflowViewState.IdRef>
+  <sap2010:WorkflowViewState.IdRef>Workbook_RemoveReadOnlyAttribute_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -33,8 +35,8 @@
       <x:String>GlobalVariablesNamespace</x:String>
       <x:String>GlobalConstantsNamespace</x:String>
       <x:String>System.Runtime.Serialization</x:String>
-      <x:String>System.Reflection</x:String>
       <x:String>ClosedXML.Excel</x:String>
+      <x:String>System.Reflection</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -71,28 +73,26 @@
       <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
       <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
       <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+      <AssemblyReference>ClosedXML</AssemblyReference>
       <AssemblyReference>System.Reflection.DispatchProxy</AssemblyReference>
       <AssemblyReference>System.Reflection.TypeExtensions</AssemblyReference>
       <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
       <AssemblyReference>UiPath.Workflow</AssemblyReference>
-      <AssemblyReference>ClosedXML</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence sap2010:Annotation.AnnotationText="1. Add path to your workbook in WorkbookPath in-argument 1&#xA;2. Add path for workbook with hyperlinks removed. Can be the same path as WorkbookPath, but it will overwrite original file&#xA;" DisplayName="Workbook_RemoveHyperlinks" sap:VirtualizedContainerService.HintSize="512,790" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence sap2010:Annotation.AnnotationText="1. Add path to your file/workbook that you need to make non-read-only in FilePath in-argument&#xD;&#xA;2. The snippet will apply attribute to the specified path" DisplayName="Workbook_RemoveReadOnlyAttribute" sap:VirtualizedContainerService.HintSize="512,775" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
         <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="450,141" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="[UiPath.Core.Activities.LogLevel.Info]" Message="[&quot;Workbook_RemoveHyperlinks: START&quot;]" />
-    <ui:InvokeCode ContinueOnError="{x:Null}" Code="        ' Specify the path to your Excel file&#xA;        Dim filePath As String = WorkbookPath&#xA;&#xA;        ' Load the workbook&#xA;        Using workbook As New XLWorkbook(filePath)&#xA;            ' Loop through each worksheet in the workbook&#xA;            For Each worksheet As IXLWorksheet In workbook.Worksheets&#xA;                ' Loop through each cell in the worksheet&#xA;                For Each cell As IXLCell In worksheet.CellsUsed()&#xA;                    ' Check if the cell has a hyperlink&#xA;                    If cell.HasHyperlink Then&#xA;                        ' Get the text of the hyperlink&#xA;                        Dim hyperlinkText As String = cell.GetFormattedString()&#xA;&#xA;                        ' Remove the hyperlink while keeping the text&#xA;                        cell.Hyperlink = Nothing&#xA;&#xA;                        ' Set the cell text to the original hyperlink text&#xA;                        cell.Value = hyperlinkText&#xA;                    End If&#xA;                Next&#xA;            Next&#xA;&#xA;            ' Save the modified workbook&#xA;            workbook.SaveAs(EditedWorkbookPath)&#xA;        End Using" DisplayName="Invoke Code" sap:VirtualizedContainerService.HintSize="450,245" sap2010:WorkflowViewState.IdRef="InvokeCode_1">
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="450,141" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="[UiPath.Core.Activities.LogLevel.Info]" Message="[&quot;Workbook_RemoveReadOnlyAttribute: START&quot;]" />
+    <ui:InvokeCode ContinueOnError="{x:Null}" Code="Dim fileInfo As New System.IO.FileInfo(filePath)&#xD;&#xA;&#xD;&#xA;    If (fileInfo.Exists) Then&#xD;&#xA;        fileInfo.IsReadOnly = False&#xD;&#xA;    Else&#xD;&#xA;        Console.WriteLine(&quot;File does not exist.&quot;)&#xD;&#xA;    End If" DisplayName="Invoke Code" sap:VirtualizedContainerService.HintSize="450,245" sap2010:WorkflowViewState.IdRef="InvokeCode_1">
       <ui:InvokeCode.Arguments>
-        <InArgument x:TypeArguments="x:String" x:Key="WorkbookPath">[WorkbookPath]</InArgument>
-        <InArgument x:TypeArguments="x:String" x:Key="EditedWorkbookPath">[EditedWorkbookPath]</InArgument>
-        <InArgument x:TypeArguments="ce:XLWorkbook" x:Key="XLWorkbook">[new ClosedXML.Excel.XLWorkbook()]</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="filePath">[FilePath]</InArgument>
       </ui:InvokeCode.Arguments>
     </ui:InvokeCode>
-    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="450,141" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="[UiPath.Core.Activities.LogLevel.Info]" Message="[&quot;Workbook_RemoveHyperlinks: END&quot;]" />
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="450,141" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="[UiPath.Core.Activities.LogLevel.Info]" Message="[&quot;Workbook_RemoveReadOnlyAttribute: END&quot;]" />
   </Sequence>
 </Activity>
